@@ -1,10 +1,7 @@
-<!--  CODE FOR STUDENT --> 
-
-<form action='request.php' method='POST'>
-<input name='todo'>
-<input type='submit'>
-</form> 
 <?php 
+
+$id = $_GET['id'];
+
 $host = 'localhost';      // Database host
 $dbname = 'todo_db';  // Your database name
 $username = 'root';  // Your MySQL username
@@ -18,33 +15,22 @@ try {
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     
      // Prepare SQL statement with placeholders
-     $sql = "select * from todo_list";
+     $sql = "delete from todo_list where id = :id";
     
      // Prepare statement
      $stmt = $pdo->prepare($sql);
  
+     // Bind parameters to statement (optional, but recommended)
+     $stmt->bindParam('id', $id, PDO::PARAM_STR);
+     
      // Execute the statement
-     $result = $stmt->execute();
+     $stmt->execute();
 
-        $result = $stmt->fetchAll();
-        
-?>
-<table>
-    <tr>
-        <th>Sn</th>
-        <th>Todo</th>
-    </tr>
+     header('Location: index.php');
 
-<?php
-
-    $i=1;
-        foreach($result as $row){
-                echo "<tr><td>".$i++."</td><td>".$row['todo']."</td><td><a href='delete.php?id=".$row['id']."' >X</a></td></tr>";
-        }
 
 }
 catch (PDOException $e) {
     echo "Connection failed: " . $e->getMessage();  // Error message if connection fails
 }
-
 ?>
